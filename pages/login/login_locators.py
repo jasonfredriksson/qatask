@@ -15,6 +15,3 @@ class LoginLocators:
     @property
     def home_button(self) -> Locator:
         return self.page.get_by_role("button", name="Home")
-    
-    def button_by_name(self, button_name: str) -> Locator:
-        return self.page.get_by_role("button", name=button_name)

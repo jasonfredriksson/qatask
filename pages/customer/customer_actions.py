@@ -9,38 +9,30 @@ class CustomerActions:
     def select_user_by_name(self, name: str):
         self.locators.user_select_dropdown.select_option(label=name)
     
-    def select_user_by_index(self, index: int):
-        self.locators.user_select_dropdown.select_option(index=index)
-    
     def click_login(self):
         self.locators.login_button.click()
         self.page.wait_for_url("**/account")
     
-    def perform_deposit(self, amount: str):
+    def click_deposit(self):
         self.locators.deposit_button.click()
-        self.locators.amount_input.fill(amount)
-        self.page.get_by_role("button", name="Deposit").click()
+        self.locators.deposit_label.wait_for(state="visible", timeout=3000)
     
-    def perform_withdrawal(self, amount: str):
+    def fill_deposit_amount(self, amount: str):
+        self.locators.amount_input.fill(amount)
+    
+    def confirm_deposit(self):
+        self.locators.deposit_confirm_button.click()
+    
+    def click_withdrawal(self):
         self.locators.withdrawl_button.click()
+        self.locators.withdrawal_label.wait_for(state="visible", timeout=3000)
+    
+    def fill_withdrawal_amount(self, amount: str):
+        self.locators.amount_input.clear()
         self.locators.amount_input.fill(amount)
-        self.page.get_by_role("button", name="Withdraw").click()
     
-    def click_transactions(self):
-        self.locators.transactions_button.click()
-    
-    def click_logout(self):
-        self.locators.logout_button.click()
-        self.page.wait_for_url("**/login")
-    
-    def select_account(self, account_number: str):
-        self.locators.account_select_dropdown.select_option(label=account_number)
+    def confirm_withdrawal(self):
+        self.locators.withdraw_confirm_button.click()
     
     def get_balance_text(self) -> str:
         return self.locators.balance.text_content()
-    
-    def get_account_number_text(self) -> str:
-        return self.locators.account_number.text_content()
-    
-    def get_welcome_message_text(self) -> str:
-        return self.locators.welcome_message.text_content()

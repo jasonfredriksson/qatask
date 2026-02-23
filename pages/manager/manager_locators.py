@@ -47,30 +47,3 @@ class ManagerLocators:
     @property
     def process_button(self) -> Locator:
         return self.page.get_by_role("button", name="Process")
-    
-    @property
-    def success_alert(self) -> Locator:
-        return self.page.locator(".alert")
-    
-    @property
-    def customers_table(self) -> Locator:
-        return self.page.locator("table.table")
-    
-    @property
-    def search_customer_input(self) -> Locator:
-        return self.page.get_by_placeholder("Search Customer")
-    
-    def button_by_name(self, button_name: str) -> Locator:
-        return self.page.get_by_role("button", name=button_name)
-    
-    def input_by_placeholder(self, placeholder: str) -> Locator:
-        return self.page.get_by_placeholder(placeholder)
-    
-    def customer_row_by_index(self, index: int) -> Locator:
-        return self.page.locator(f"tbody tr:nth-child({index + 1})")
-    
-    def delete_button_by_customer_index(self, index: int) -> Locator:
-        return self.page.locator(f"tbody tr:nth-child({index + 1}) button")
-    
-    def table_cell_by_text(self, text: str) -> Locator:
-        return self.page.locator(f"td:has-text('{text}')")

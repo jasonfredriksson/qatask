@@ -42,7 +42,7 @@ class CustomerLocators:
     
     @property
     def deposit_button(self) -> Locator:
-        return self.page.get_by_role("button", name="Deposit")
+        return self.page.locator("button.btn-lg.tab:has-text('Deposit')")
     
     @property
     def withdrawl_button(self) -> Locator:
@@ -53,22 +53,25 @@ class CustomerLocators:
         return self.page.get_by_placeholder("amount")
     
     @property
+    def deposit_label(self) -> Locator:
+        return self.page.get_by_text("Amount to be Deposited :")
+    
+    @property
+    def withdrawal_label(self) -> Locator:
+        return self.page.get_by_text("Amount to be Withdrawn :")
+    
+    @property
+    def deposit_confirm_button(self) -> Locator:
+        return self.page.locator("form[ng-submit='deposit()'] button[type='submit']")
+    
+    @property
+    def withdraw_confirm_button(self) -> Locator:
+        return self.page.get_by_role("button", name="Withdraw", exact=False).last
+    
+    @property
     def success_message(self) -> Locator:
         return self.page.locator("span[ng-show='message']")
     
     @property
     def account_select_dropdown(self) -> Locator:
         return self.page.locator("#accountSelect")
-    
-    @property
-    def transactions_table(self) -> Locator:
-        return self.page.locator("table.table")
-    
-    def button_by_name(self, button_name: str) -> Locator:
-        return self.page.get_by_role("button", name=button_name)
-    
-    def account_info_by_label(self, label: str) -> Locator:
-        return self.page.locator(f"text={label}").locator("..").locator("strong")
-    
-    def transaction_row_by_index(self, index: int) -> Locator:
-        return self.page.locator(f"tbody tr:nth-child({index + 1})")
