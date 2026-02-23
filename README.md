@@ -13,7 +13,7 @@ A comprehensive test automation suite using Python and Playwright for testing th
 - **Modular test structure** - Clean separation of concerns
 - **Granular action methods** - Avoid Playwright strict mode violations
 
-## 📋 Test Coverage
+## Test Coverage
 
 ### Login Page Tests
 - Page load verification
@@ -38,7 +38,7 @@ A comprehensive test automation suite using Python and Playwright for testing th
 - Multiple browser compatibility
 - Mobile and tablet viewport testing
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - Python 3.8+
@@ -294,7 +294,7 @@ Centralized test data including:
 8. **Console Logging** - Detailed logging for each test step for better debugging
 9. **Balance Validation** - Tests validate actual balance changes instead of unreliable transaction tables
 
-## 🐛 Debugging
+## Debugging
 
 ### Screenshots on Failure
 Screenshots are automatically captured when tests fail and saved in the `reports/` directory.
@@ -320,30 +320,3 @@ pytest --headed --devtools
    - Test methods: `test_*`
 4. Use Playwright's `expect` API for assertions
 5. Add descriptive docstrings for each test
-
-## Continuous Integration
-
-This test suite can be easily integrated into CI/CD pipelines:
-
-```yaml
-# Example GitHub Actions
-- name: Run tests
-  run: |
-    pip install -r requirements.txt
-    playwright install
-    pytest --browser chromium --headed=false
-
-- name: Upload test artifacts
-  if: always()
-  uses: actions/upload-artifact@v3
-  with:
-    name: playwright-results
-    path: test-results/
-```
-
-## 🤝 Contributing
-
-1. Follow the existing code style and patterns
-2. Add tests for new functionality
-3. Update documentation as needed
-4. Ensure all tests pass before submitting
