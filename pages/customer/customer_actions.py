@@ -1,9 +1,10 @@
 from playwright.sync_api import Page
+from pages.base.base_actions import BaseActions
 from pages.customer.customer_locators import CustomerLocators
 
-class CustomerActions:
+class CustomerActions(BaseActions):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
         self.locators = CustomerLocators(page)
     
     def select_user_by_name(self, name: str):

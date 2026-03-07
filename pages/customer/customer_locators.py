@@ -1,8 +1,9 @@
 from playwright.sync_api import Page, Locator
+from pages.base.base_locators import BaseLocators
 
-class CustomerLocators:
+class CustomerLocators(BaseLocators):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
     
     @property
     def user_select_dropdown(self) -> Locator:

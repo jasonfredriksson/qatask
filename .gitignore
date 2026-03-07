@@ -25,6 +25,7 @@ wheels/
 
 # Pytest
 .pytest_cache/
+.tox/
 .cache/
 htmlcov/
 .coverage

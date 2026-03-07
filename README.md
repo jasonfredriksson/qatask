@@ -4,13 +4,15 @@ A comprehensive test automation suite using Python and Playwright for testing th
 
 ## Features
 
-- **Enhanced Page Object Model** - Separate Locators, Actions, and Validations layers
+- **Enhanced Page Object Model** - Separate Locators, Actions, and Validations layers with full base class inheritance
+- **Centralized Configuration** - Environment-based configuration using python-dotenv
+- **Comprehensive Test Coverage** - Both positive and negative test scenarios including edge cases
 - **Playwright's built-in locators** - Auto-wait and auto-retry capabilities with `get_by_role()`, `get_by_text()`, etc.
-- **Cross-browser testing** (Chrome, Firefox, Safari)
+- **Cross-browser testing** - Chrome, Firefox, Safari support
 - **JSON-based test data** - Centralized test data management
-- **Full user journey coverage** (Customer & Manager flows)
-- **Playwright HTML Reporter** - Beautiful built-in reports with screenshots and traces
-- **Modular test structure** - Clean separation of concerns
+- **Full user journey coverage** - Customer & Manager flows with validation scenarios
+- **Artifact Generation** - Screenshots, videos, and unique trace files per test
+- **Modular test structure** - Clean separation of concerns with DRY principles
 - **Granular action methods** - Avoid Playwright strict mode violations
 
 ## Test Coverage
@@ -20,23 +22,27 @@ A comprehensive test automation suite using Python and Playwright for testing th
 - Button presence and functionality
 - Navigation to customer and manager portals
 
-### Customer Operations Tests
+### Customer Operations Tests (Happy Path)
 - Login and account verification
 - Deposit functionality
 - Withdrawal functionality
-- Transaction history
-- Logout functionality
+- Transaction history with balance validation
+- Multiple transactions with balance tracking
 
-### Bank Manager Operations Tests
+### Bank Manager Operations Tests (Happy Path)
 - Add new customers
 - Open accounts
 - View customer list
 - Delete customers
-- Logout functionality
+- Account verification
 
-### Cross-browser & Responsive Tests
-- Multiple browser compatibility
-- Mobile and tablet viewport testing
+### Negative & Validation Scenarios
+- **Overdraft Protection** - Withdrawal exceeding available balance
+- **Empty Input Validation** - Deposit/withdrawal with empty amount
+- **Zero Amount Handling** - Transactions with zero value
+- **Negative Amount Validation** - Deposits with negative values
+- **HTML5 Input Validation** - Non-numeric input prevention
+- **Boundary Testing** - Very large amounts (999,999,999)
 
 ## Setup Instructions
 
@@ -47,12 +53,21 @@ A comprehensive test automation suite using Python and Playwright for testing th
 ### Installation
 
 1. **Clone or create the project directory**
-2. **Install dependencies:**
+
+2. **Configure environment variables:**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env with your configuration (URL, browser settings, etc.)
+   ```
+
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Install Playwright browsers:**
+4. **Install Playwright browsers:**
    ```bash
    playwright install
    ```
@@ -140,14 +155,17 @@ banking-automation/
 │       ├── manager_validations.py # Manager page validations
 │       └── manager_page.py       # Manager page facade
 ├── tests/
-│   ├── test_customer_workflows.py # Customer workflow tests
-│   ├── test_manager_workflows.py  # Manager workflow tests
+│   ├── test_customer_workflows.py # Customer workflow tests (happy path)
+│   ├── test_manager_workflows.py  # Manager workflow tests (happy path)
+│   ├── test_negative_scenarios.py # Negative and validation test scenarios
 │   ├── test_data.json            # Centralized test data
 │   └── conftest.py               # Pytest fixtures and configuration
 ├── test-results/                 # Playwright test artifacts
+│   ├── traces/                   # Unique trace file per test
 │   ├── videos/                   # Test execution videos
-│   ├── trace.zip                 # Interactive trace files
 │   └── screenshots/              # Failure screenshots
+├── .env                          # Environment configuration (gitignored)
+├── .env.example                  # Environment template
 ├── pytest.ini                    # Pytest configuration with Playwright settings
 ├── playwright.config.py          # Playwright browser and context configuration
 ├── requirements.txt              # Python dependencies
@@ -156,17 +174,29 @@ banking-automation/
 
 ## Page Object Model Architecture
 
-### Enhanced 3-Layer Structure
+### Enhanced 3-Layer Structure with Base Class Inheritance
 
-This project uses an enhanced Page Object Model with three distinct layers:
+This project uses an enhanced Page Object Model with three distinct layers, all inheriting from base classes:
 
 1. **Locators** - Element selectors and locator methods
+   - All inherit from `BaseLocators` (eliminates duplicate locators)
 2. **Actions** - User interactions and workflows
+   - All inherit from `BaseActions` (centralizes navigation and common actions)
 3. **Validations** - Assertions and verification methods
+   - All inherit from `BaseValidations` (shares common validation patterns)
+
+**Inheritance Hierarchy:**
+```
+BaseLocators → LoginLocators, CustomerLocators, ManagerLocators
+BaseActions → LoginActions, CustomerActions, ManagerActions
+BaseValidations → LoginValidations, CustomerValidations, ManagerValidations
+```
 
 This separation provides:
+- **DRY Principle** - No code duplication, everything inherited from base classes
 - **Clear responsibility** - Each file has a single, well-defined purpose
-- **Easy maintenance** - Changes to UI only affect locators
+- **Easy maintenance** - Changes to UI only affect locators, common logic in base classes
+- **Centralized configuration** - URL and settings managed through `BaseActions` using .env
 - **Reusability** - Actions and validations can be composed in different ways
 - **Testability** - Each layer can be tested independently
 
@@ -281,6 +311,46 @@ Centralized test data including:
 - Transaction amounts
 - Currencies
 - Validation messages
+
+## Framework Improvements
+
+This framework has been built with production-quality standards addressing common automation pitfalls:
+
+### ✅ Base Class Inheritance
+**All page objects inherit from base classes** - eliminates code duplication and centralizes common functionality:
+- `LoginLocators`, `CustomerLocators`, `ManagerLocators` → inherit from `BaseLocators`
+- `LoginActions`, `CustomerActions`, `ManagerActions` → inherit from `BaseActions`
+- `LoginValidations`, `CustomerValidations`, `ManagerValidations` → inherit from `BaseValidations`
+
+**Benefits:**
+- No duplicate `home_button` locators or `click_home()` methods
+- Centralized URL management through `BaseActions`
+- DRY principle applied throughout
+
+### ✅ Centralized Configuration
+**Environment-based configuration using python-dotenv:**
+- `.env` file contains all configuration (BASE_URL, browser settings)
+- `.env.example` provided as template
+- No hardcoded URLs anywhere in codebase
+- Easy environment switching (dev, staging, prod)
+
+### ✅ Proper Artifact Pipeline
+**Uses pytest-playwright's built-in fixtures** instead of custom implementations:
+- Removed custom `page` fixture that bypassed artifact generation
+- Screenshots automatically captured on failures
+- Videos recorded for failed tests
+- Unique trace files generated per test (not overwritten)
+
+### ✅ Comprehensive Test Coverage
+**14 tests total: 8 happy path + 6 negative scenarios**
+
+**Negative & Validation Scenarios:**
+- Overdraft protection (withdrawal exceeding balance)
+- Empty input validation
+- Zero amount handling
+- Negative amount validation
+- HTML5 input validation (type="number")
+- Boundary testing (very large amounts)
 
 ## Best Practices Used
 

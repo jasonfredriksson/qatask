@@ -1,9 +1,10 @@
 from playwright.sync_api import Page
+from pages.base.base_actions import BaseActions
 from pages.manager.manager_locators import ManagerLocators
 
-class ManagerActions:
+class ManagerActions(BaseActions):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
         self.locators = ManagerLocators(page)
     
     def click_add_customer(self):
@@ -19,7 +20,3 @@ class ManagerActions:
         customer_row = self.page.locator(f"tbody tr:has-text('{first_name}'):has-text('{last_name}'):has-text('{postcode}')")
         delete_button = customer_row.locator("button:has-text('Delete')")
         delete_button.click()
-    
-    def click_home(self):
-        self.locators.home_button.click()
-        self.page.wait_for_url("**/login")

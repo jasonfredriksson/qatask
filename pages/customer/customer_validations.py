@@ -1,10 +1,11 @@
 import re
 from playwright.sync_api import Page, expect
+from pages.base.base_validations import BaseValidations
 from pages.customer.customer_locators import CustomerLocators
 
-class CustomerValidations:
+class CustomerValidations(BaseValidations):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
         self.locators = CustomerLocators(page)
     
     def verify_customer_selection_page_loaded(self):

@@ -2,6 +2,7 @@
 # This enables Playwright's built-in features like screenshots, videos, and traces
 
 import pytest
+from pathlib import Path
 
 @pytest.fixture(scope="session")
 def browser_context_args(browser_context_args):
@@ -23,8 +24,17 @@ def browser_type_launch_args(browser_type_launch_args):
     }
 
 @pytest.fixture(scope="function", autouse=True)
-def context(context):
-    """Enable tracing for all tests"""
+def context(context, request):
+    """Enable tracing for all tests with unique trace files per test"""
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
     yield context
-    context.tracing.stop(path="test-results/trace.zip")
+    
+    # Generate unique trace file name based on test name
+    trace_dir = Path("test-results/traces")
+    trace_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create safe filename from test name
+    test_name = request.node.name.replace("[", "_").replace("]", "_").replace("::", "_")
+    trace_path = trace_dir / f"{test_name}.zip"
+    
+    context.tracing.stop(path=str(trace_path))

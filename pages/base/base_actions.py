@@ -1,11 +1,16 @@
+import os
+from dotenv import load_dotenv
 from playwright.sync_api import Page
 from pages.base.base_locators import BaseLocators
+
+# Load environment variables
+load_dotenv()
 
 class BaseActions:
     def __init__(self, page: Page):
         self.page = page
         self.locators = BaseLocators(page)
-        self.base_url = "https://www.globalsqa.com/angularJs-protractor/BankingProject/#/"
+        self.base_url = os.getenv("BASE_URL", "https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login")
     
     def navigate_to(self, path: str = ""):
         self.page.goto(f"{self.base_url}{path}")
